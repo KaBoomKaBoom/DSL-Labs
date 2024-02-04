@@ -22,7 +22,7 @@ class Grammar:
             
         return generateFromSymbol(self.S)
     
-    def toFiniteAutomaton(w):
+    def toFiniteAutomaton(self,w):
         finiteAutomatom = FiniteAutomaton()
         return finiteAutomatom.stringBelongToLanguage(w)
 
@@ -45,7 +45,6 @@ class FiniteAutomaton :
         self.F = {'d','f'}
     def stringBelongToLanguage(self,w):
         currentState = self.q0
-        #print("String:", w)
         leng=0
         for letter in w:
             if (currentState, letter) in self.Delta:
@@ -64,9 +63,9 @@ class FiniteAutomaton :
 # Instantiate Grammar
 grammar = Grammar()
 finiteAutomatom = FiniteAutomaton()
-for i in range(50):
+for i in range(5):
     w = grammar.generateString()
     print("Generated string:", w)
-    s = finiteAutomatom.stringBelongToLanguage(w)
+    s = grammar.toFiniteAutomaton(w)
     print("String belongs to language:", s)
     
