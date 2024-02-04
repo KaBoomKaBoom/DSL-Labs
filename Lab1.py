@@ -22,15 +22,15 @@ class Grammar:
             
         return generateFromSymbol(self.S)
     
-    def toFiniteAutomaton(self,w):
-        finiteAutomatom = FiniteAutomaton()
-        return finiteAutomatom.stringBelongToLanguage(w)
+    def generateWords( self):
+        for i in range(5):
+            w = grammar.generateString()
+            print("Generated string:", w)
 
-class FiniteAutomaton :
-    def __init__(self):
-        self.Q = ['S','D','R','f']
-        self.Sigma = ['a','b','c','d','f']
-        self.Delta = {
+    def toFiniteAutomaton(self):
+        Q = ['S','D','R','f']
+        Sigma = ['a','b','c','d','f']
+        Delta = {
             ('S', 'a'): 'S',
             ('S', 'b'): 'D',
             ('S', 'f'): 'R',
@@ -41,8 +41,17 @@ class FiniteAutomaton :
             ('R', 'f'): 'f',
 
         }
-        self.q0 = 'S'
-        self.F = {'d','f'}
+        q0 = 'S'
+        F = {'d','f'}
+        return FiniteAutomaton(Q, Sigma, Delta, q0, F)
+    
+class FiniteAutomaton :
+    def __init__(self ,Q, Sigma, Delta, q0, F):
+        self.Q = Q
+        self.Sigma = Sigma
+        self.Delta = Delta
+        self.q0 = q0
+        self.F = F
     def stringBelongToLanguage(self,w):
         currentState = self.q0
         leng=0
@@ -60,12 +69,11 @@ class FiniteAutomaton :
             leng+=1
         return currentState in self.F
 
-# Instantiate Grammar
+#Test Grammar functionality
 grammar = Grammar()
-finiteAutomatom = FiniteAutomaton()
-for i in range(5):
-    w = grammar.generateString()
-    print("Generated string:", w)
-    s = grammar.toFiniteAutomaton(w)
-    print("String belongs to language:", s)
-    
+grammar.generateWords()
+print(grammar.toFiniteAutomaton())
+
+#Test Finite Automatum functionality
+finiteAutomatom = FiniteAutomaton(grammar.toFiniteAutomaton().Q, grammar.toFiniteAutomaton().Sigma, grammar.toFiniteAutomaton().Delta, grammar.toFiniteAutomaton().q0, grammar.toFiniteAutomaton().F)
+print(finiteAutomatom.stringBelongToLanguage('abdf'))
