@@ -22,15 +22,20 @@ class Grammar:
             
         return generateFromSymbol(self.S)
     
-    def generateWords( self):
-        for i in range(5):
+    def generate5Words( self):
+        for i in range(10):
             w = grammar.generateString()
             print("Generated string:", w)
 
     def toFiniteAutomaton(self):
-        Q = ['S','D','R','f']
-        Sigma = ['a','b','c','d','f']
-        Delta = {
+
+        return FiniteAutomaton()
+    
+class FiniteAutomaton :
+    def __init__(self):
+        self.Q = ['S','D','R','f']
+        self.Sigma = ['a','b','c','d','f']
+        self.Delta = {
             ('S', 'a'): 'S',
             ('S', 'b'): 'D',
             ('S', 'f'): 'R',
@@ -41,20 +46,12 @@ class Grammar:
             ('R', 'f'): 'f',
 
         }
-        q0 = 'S'
-        F = {'d','f'}
-        return FiniteAutomaton(Q, Sigma, Delta, q0, F)
-    
-class FiniteAutomaton :
-    def __init__(self ,Q, Sigma, Delta, q0, F):
-        self.Q = Q
-        self.Sigma = Sigma
-        self.Delta = Delta
-        self.q0 = q0
-        self.F = F
+        self.q0 = 'S'
+        self.F = {'d','f'}
     def stringBelongToLanguage(self,w):
         currentState = self.q0
         leng=0
+        transitions=''
         for letter in w:
             if (currentState, letter) in self.Delta:
                 if (currentState, letter)==('D', 'd') and leng==len(w)-1:
@@ -71,9 +68,14 @@ class FiniteAutomaton :
 
 #Test Grammar functionality
 grammar = Grammar()
-grammar.generateWords()
-print(grammar.toFiniteAutomaton())
+grammar.generate5Words()
 
-#Test Finite Automatum functionality
-finiteAutomatom = FiniteAutomaton(grammar.toFiniteAutomaton().Q, grammar.toFiniteAutomaton().Sigma, grammar.toFiniteAutomaton().Delta, grammar.toFiniteAutomaton().q0, grammar.toFiniteAutomaton().F)
-print(finiteAutomatom.stringBelongToLanguage('abdf'))
+finiteAutomatom = grammar.toFiniteAutomaton()
+testString1 = 'aaabd'
+testString2 = 'afbbbf'
+print(f"String '{testString1}': {finiteAutomatom.stringBelongToLanguage(testString1)}")
+print(f"String '{testString2}': {finiteAutomatom.stringBelongToLanguage(testString2)}")
+
+
+
+
