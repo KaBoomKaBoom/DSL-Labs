@@ -23,7 +23,7 @@ class Grammar:
         return generateFromSymbol(self.S)
     
     def generate5Words( self):
-        for i in range(10):
+        for i in range(5):
             w = grammar.generateString()
             print("Generated string:", w)
 
@@ -33,7 +33,7 @@ class Grammar:
     
 class FiniteAutomaton :
     def __init__(self):
-        self.Q = ['S','D','R','f']
+        self.Q = ['S','D','R','X']
         self.Sigma = ['a','b','c','d','f']
         self.Delta = {
             ('S', 'a'): 'S',
@@ -42,20 +42,19 @@ class FiniteAutomaton :
             ('D', 'c'): 'D',
             ('D', 'd'): 'R',
             ('R', 'b'): 'R',
-            ('D', 'd'): 'd',
-            ('R', 'f'): 'f',
+            ('D', 'd'): 'X',
+            ('R', 'f'): 'X',
 
         }
         self.q0 = 'S'
-        self.F = {'d','f'}
+        self.F = {'X'}
     def stringBelongToLanguage(self,w):
         currentState = self.q0
         leng=0
-        transitions=''
         for letter in w:
             if (currentState, letter) in self.Delta:
                 if (currentState, letter)==('D', 'd') and leng==len(w)-1:
-                    currentState = 'd'
+                    currentState = 'X'
                     return currentState in self.F
                 elif (currentState, letter)==('D', 'd'):
                     currentState = 'R'
@@ -73,8 +72,8 @@ grammar.generate5Words()
 finiteAutomatom = grammar.toFiniteAutomaton()
 testString1 = 'aaabd'
 testString2 = 'afbbbf'
-print(f"String '{testString1}': {finiteAutomatom.stringBelongToLanguage(testString1)}")
-print(f"String '{testString2}': {finiteAutomatom.stringBelongToLanguage(testString2)}")
+print(f"\nString '{testString1}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString1)}\n")
+print(f"String '{testString2}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString2)}")
 
 
 
