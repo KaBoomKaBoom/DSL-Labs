@@ -23,12 +23,11 @@ class Grammar:
         return generateFromSymbol(self.S)
     
     def generate5Words( self):
-        for i in range(5):
+        for _ in range(5):
             w = grammar.generateString()
             print("Generated string:", w)
 
     def toFiniteAutomaton(self):
-
         return FiniteAutomaton()
     
 class FiniteAutomaton :
@@ -72,8 +71,10 @@ grammar.generate5Words()
 finiteAutomatom = grammar.toFiniteAutomaton()
 testString1 = 'aaabd'
 testString2 = 'afbbbf'
+testString3 = 'afbccbbf'
 print(f"\nString '{testString1}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString1)}\n")
-print(f"String '{testString2}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString2)}")
+print(f"String '{testString2}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString2)}\n")
+print(f"String '{testString3}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString3)}")
 
 
 
