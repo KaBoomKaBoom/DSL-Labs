@@ -29,7 +29,63 @@ class Grammar:
 
     def toFiniteAutomaton(self):
         return FiniteAutomaton()
+
+    def transform_grammar(self):
+        productions = []
+
+        for non_terminal, production_list in self.P.items():
+            for production in production_list:
+                productions.append(f"{non_terminal} -> {production}")
+        return productions
     
+    def classify_grammar(self, terminals, non_terminals):
+        # Check if the grammar is regular
+        productions = self.transform_grammar()
+        is_regular = True
+        for production in productions:
+            left, right = production.split("->")
+            left = left.strip()
+            right = right.strip()
+            if len(right) > 2:
+                is_regular = False
+                break
+            if len(right) == 2 and right[0] not in non_terminals:
+                is_regular = False
+                break
+
+        # Check if the grammar is context-free
+        is_context_free = True
+        for production in productions:
+            left, right = production.split("->")
+            left = left.strip()
+            right = right.strip()
+            if len(left) != 1:
+                is_context_free = False
+                break
+
+        # Check if the grammar is context-sensitive
+        is_context_sensitive = True
+        for production in productions:
+            left, right = production.split("->")
+            left = left.strip()
+            right = right.strip()
+            if len(left) > len(right):
+                is_context_sensitive = False
+                break
+
+        # Check if the grammar is unrestricted
+        is_unrestricted = True
+
+        # Determine the type of grammar
+        if is_regular:
+            return "Regular Grammar"
+        elif is_context_free:
+            return "Context-Free Grammar"
+        elif is_context_sensitive:
+            return "Context-Sensitive Grammar"
+        else:
+            return "Unrestricted Grammar"
+
 class FiniteAutomaton :
     def __init__(self):
         self.Q = ['S','D','R','X']
@@ -76,6 +132,5 @@ print(f"\nString '{testString1}': \n Validation: {finiteAutomatom.stringBelongTo
 print(f"String '{testString2}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString2)}\n")
 print(f"String '{testString3}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString3)}")
 
-
-
-
+gram = grammar.classify_grammar(grammar.V_t, grammar.V_n)
+print(gram)
