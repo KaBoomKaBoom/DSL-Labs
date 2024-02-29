@@ -41,7 +41,15 @@ class FiniteAutomatom:
                 return False
         return True
 
-         
+    def NFAtoDFA(self) :
+        col =len(self.Sigma) + 1
+        deltaDFA = [[0 for _ in range(col)] for _ in range(10)]
+        deltaDFA[0][0] = 'delta'
+        counter = 0
+        for i in range(1,col):
+            deltaDFA[0][i] = self.Sigma[counter]
+            counter+=1
+        print(deltaDFA)
 
 class Grammar:
     def __init__(self, S, V_n, V_t, P):
@@ -59,12 +67,14 @@ class Grammar:
             print(f"    {a} -> {b}{c}")
         print("}")
 
+
+#main
 finiteAutomatom = FiniteAutomatom()
 grammar = finiteAutomatom.convert_to_grammar()
-grammar.show_gramamr()
+# grammar.show_gramamr()
 
-if finiteAutomatom.checkDeterministic()==False:
-    print('Non-Deterministic Automatom')
-else:
-    print('Deterministic Automatom')
-    
+# if finiteAutomatom.checkDeterministic()==False:
+#     print('Non-Deterministic Finite Automatom')
+# else:
+#     print('Deterministic Finite Automatom')
+finiteAutomatom.NFAtoDFA()
