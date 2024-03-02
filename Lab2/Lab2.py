@@ -47,16 +47,7 @@ class FiniteAutomatom:
         final_states = []
 
         transitions = {}
-        new_states=[]
-        for key, value in self.Delta.items():
-            a, b = key
-            if a not in transitions.keys():
-                transitions[a] = {}
-            for el in input_symbols:
-                if (a, el) in self.Delta.keys():
-                    transitions[a].update({el : ','.join(self.Delta[(a, el)])})
-                    if len(','.join(self.Delta[(a, el)])) > 2:
-                        new_states.append(','.join(self.Delta[(a, el)]))
+        new_states=['q0']
         while new_states:
             for state in new_states:
                 new_states.remove(state)
@@ -67,20 +58,19 @@ class FiniteAutomatom:
                         transitions[state].update({el : ''})
                         for s in temp_state:
                             if (s, el) in self.Delta.keys():
-                                transitions[state][el]+=','.join(self.Delta[(s, el)]) + ','
-                                if len(','.join(transitions[state][el])) > len(','.join(state)):
+                                transitions[state][el] += ','.join(self.Delta[(s, el)]) + ','
+                                if len(','.join(transitions[state][el])) >= len(','.join(state)):
                                     new_states.append(transitions[state][el].rstrip(','))
-                        for key, value in transitions[state].items():
-                            transitions[state][key] = value.rstrip(',')
+                        transitions[state][el] = transitions[state][el].rstrip(',')
+                    # Remove empty strings from the secondary dictionaries
+                    transitions[state] = {key: value for key, value in transitions[state].items() if value != ''}
 
-        for el in self.F:
-            transitions[el] = {}
 
         for key, _ in transitions.items():
             states.append(key)
         
         for el in states:
-            if self.F[0] in el.split(','):
+            if self.F[0] in el:
                 final_states.append(el)
 
         print(f"Q = {states}")
