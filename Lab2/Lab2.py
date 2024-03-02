@@ -1,4 +1,4 @@
-from collections import Counter
+from automathon import DFA, NFA
 
 class FiniteAutomatom:
     def __init__(self):
@@ -35,21 +35,70 @@ class FiniteAutomatom:
         return Grammar(S, V_n, V_t, P)
 
     def checkDeterministic(self):
-        counter = {}
-        for key, value in self.Delta.items():
+        for _, value in self.Delta.items():
             if(len(value))>1:
                 return False
         return True
 
     def NFAtoDFA(self) :
-        col =len(self.Sigma) + 1
-        deltaDFA = [[0 for _ in range(col)] for _ in range(10)]
-        deltaDFA[0][0] = 'delta'
-        counter = 0
-        for i in range(1,col):
-            deltaDFA[0][i] = self.Sigma[counter]
-            counter+=1
-        print(deltaDFA)
+        input_symbols = self.Sigma
+        initial_state = self.q0
+        states = []
+        final_states = []
+
+        transitions = {}
+        new_states=[]
+        for key, value in self.Delta.items():
+            a, b = key
+            if a not in transitions.keys():
+                transitions[a] = {}
+            for el in input_symbols:
+                if (a, el) in self.Delta.keys():
+                    transitions[a].update({el : ','.join(self.Delta[(a, el)])})
+                    if len(','.join(self.Delta[(a, el)])) > 2:
+                        new_states.append(','.join(self.Delta[(a, el)]))
+        while new_states:
+            for state in new_states:
+                new_states.remove(state)
+                if state not in transitions.keys():
+                    transitions[state] = {}
+                    temp_state = state.split(',')
+                    for el in input_symbols:
+                        transitions[state].update({el : ''})
+                        for s in temp_state:
+                            if (s, el) in self.Delta.keys():
+                                transitions[state][el]+=','.join(self.Delta[(s, el)]) + ','
+                                if len(','.join(transitions[state][el])) > len(','.join(state)):
+                                    new_states.append(transitions[state][el].rstrip(','))
+                        for key, value in transitions[state].items():
+                            transitions[state][key] = value.rstrip(',')
+
+        for el in self.F:
+            transitions[el] = {}
+
+        for key, _ in transitions.items():
+            states.append(key)
+        
+        for el in states:
+            if self.F[0] in el.split(','):
+                final_states.append(el)
+
+        print(f"Q = {states}")
+        print(f"Sigma = {input_symbols}")
+        print(f"Delta = {transitions}")
+        print(f"q0 = {initial_state}")
+        print(f"F = {final_states}")
+
+
+        dfa = DFA(
+            states,
+            input_symbols,
+            transitions,
+            initial_state,
+            final_states
+        )
+        dfa.view("DFA")
+
 
 class Grammar:
     def __init__(self, S, V_n, V_t, P):
@@ -71,10 +120,23 @@ class Grammar:
 #main
 finiteAutomatom = FiniteAutomatom()
 grammar = finiteAutomatom.convert_to_grammar()
-# grammar.show_gramamr()
+print("1.Grammar:")
+grammar.show_gramamr()
 
-# if finiteAutomatom.checkDeterministic()==False:
-#     print('Non-Deterministic Finite Automatom')
-# else:
-#     print('Deterministic Finite Automatom')
+print()
+
+if finiteAutomatom.checkDeterministic()==False:
+    print('2. Non-Deterministic Finite Automatom\n')
+else:
+    print('2. Deterministic Finite Automatom\n')
+
+print("3. Deterministic Finite Automatom:")
 finiteAutomatom.NFAtoDFA()
+
+#NFA to compare graphicly with DFA
+NFA({'q0','q1','q2','q3','q4'}, {'a','b'}, 
+    {'q0' : {'a' : {'q1'}},
+     'q1' : {'b' : {'q1'}, 'a' : {'q2'}},
+     'q2' : {'b' : {'q2', 'q3'}},
+     'q3' : {'b' : {'q4'}, 'a' : {'q1'}}},
+     'q0', {'q4'}).view("NFA")
