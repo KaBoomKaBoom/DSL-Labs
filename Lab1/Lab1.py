@@ -78,13 +78,13 @@ class Grammar:
 
         # Determine the type of grammar
         if is_regular:
-            return "Regular Grammar"
+            return "Type 3. Regular Grammar"
         elif is_context_free:
-            return "Context-Free Grammar"
+            return "Type 2. Context-Free Grammar"
         elif is_context_sensitive:
-            return "Context-Sensitive Grammar"
+            return "Type 1. Context-Sensitive Grammar"
         else:
-            return "Unrestricted Grammar"
+            return "Type 0. Unrestricted Grammar"
 
 class FiniteAutomaton :
     def __init__(self):
@@ -122,15 +122,15 @@ class FiniteAutomaton :
 
 #Test Grammar functionality
 grammar = Grammar()
-grammar.generate5Words()
+# grammar.generate5Words()
 
-finiteAutomatom = grammar.toFiniteAutomaton()
-testString1 = 'aaabd'
-testString2 = 'afbbbf'
-testString3 = 'afbccbbf'
-print(f"\nString '{testString1}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString1)}\n")
-print(f"String '{testString2}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString2)}\n")
-print(f"String '{testString3}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString3)}")
+# finiteAutomatom = grammar.toFiniteAutomaton()
+# testString1 = 'aaabd'
+# testString2 = 'afbbbf'
+# testString3 = 'afbccbbf'
+# print(f"\nString '{testString1}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString1)}\n")
+# print(f"String '{testString2}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString2)}\n")
+# print(f"String '{testString3}': \n Validation: {finiteAutomatom.stringBelongToLanguage(testString3)}")
 
 gram = grammar.classify_grammar(grammar.V_t, grammar.V_n)
 print(gram)
