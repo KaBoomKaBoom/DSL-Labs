@@ -92,11 +92,10 @@ class Lexer:
 
 if __name__ == '__main__':
     #lexer = Lexer("i = 5\n for i in range(10): print(i)\n i +=1\n if i == 10: print(Hello)\n else: print(World)")
-    #lexer = Lexer("i = 0\n while i < 10: print(i)\n i += 1\n if i == 10: print(Hello)\n else: print(World)\n")
-    lexer = Lexer("age = 18\n if age >= 18: print('You are an adult')\n else: print('You are a child')\n")
+    #lexer = Lexer("i = 0\n while i < 10: print(i)\n i += 1\n if i == 10: print('Hello')\n else: print('World')\n")
+    lexer = Lexer("i = 0\n while i < 10: print(i)\n i += 1\n if i == 10: print('Hello')\n else: print('World')\n")
     while True:
         token = lexer.get_next_token()
         if token.type == EOF:
             break
         print(token)
-
