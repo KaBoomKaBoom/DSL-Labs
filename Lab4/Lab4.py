@@ -6,52 +6,63 @@ def generateString(rule):
     i = 0
     while i < len(rule):
 
+        #cover case when 1 occurrence from options
+        if  (rule[i] == "(" and rule.index(")", i) == len(rule) - 1 ) or (rule[i] == "(" and rule[rule.index(")", i) + 1] not in ["*", "+", "?", "{"]):
+            char  = choice(options(rule[i+1:rule.index(")", i)]))
+            string += char
+            i = rule.index(")", i)
+            print(f"Just one occurrence from options: Adding {char} to string => {string}")
+        
         #cover case when 1 or more occurrences from options
-        if rule[i] == "(" and rule[i + 1] == "+":
-
-            for _ in range(random.randint(1, 5)):
-                string += choice(options(rule[i+1:rule.index(")", i)])) 
+        elif rule[i] == "(" and rule[rule.index(")", i) + 1] == "+":
+            times = random.randint(1, 5)
+            for _ in range(times):
+                char =  choice(options(rule[i + 1:rule.index(")", i)]))
+                string +=  char
+                print(f"One or more occurrences from options: Adding {char} to string => {string}")
             i = rule.index(")", i) + 1
 
         #cover case when 0 or more occurrences from options
-        elif rule[i] == "(" and rule[i + 1] == "*":
-
+        elif rule[i] == "(" and rule[rule.index(")", i) + 1] == "*":
             for _ in range(random.randint(0, 5)):
-                string += choice(options(rule[i+1:rule.index(")", i)])) 
+                char = choice(options(rule[i+1:rule.index(")", i)]))
+                string +=  char
+                print(f"Zero or more occurrences from options: Adding {char} to string => {string}")
             i = rule.index(")", i) + 1
         
         #cover case when fixed occurrences from options
-        elif rule[i] == "(" and rule.index(")", i) + 1 == "{":
-            for i in range(int(rule.index("}", i)) - 1):
-                string += choice(options(rule[i+1:rule.index(")", i)]))
-            i = rule.index("}", i) + 1  
+        elif rule[i] == "(" and rule[rule.index(")", i) + 1] == "{":
+            for _ in range(int(rule[rule.index("{", i) + 1])):
+                char = choice(options(rule[i+1:rule.index(")", i)]))
+                string += char
+                print(f"Fixed occurrences from options: Adding {char} to string => {string}")
+            i = rule.index("}", i) + 1
         
         #cover case when 0 or 1 occurrence from options
-        elif rule[i] == "(" and rule.index(")", i) + 1 == "?" :
+        elif rule[i] == "(" and rule[rule.index(")", i) + 1] == "?" :
             if random.randint(0, 1):
-                string += choice(options(rule[i+1:rule.index(")", i)])) 
+                char = choice(options(rule[i+1:rule.index(")", i)]))
+                string += char
+                print(f"Zero or one occurrence from options: Adding {char} to string => {string}")
             i = rule.index(")", i) + 1
 
         elif  i < len(rule) - 2 and rule[i + 1] == "?":
             if random.randint(0, 1):
                 string += rule[i]
+                print(f"Zero or one occurrence: Adding {rule[i]} to string => {string}")
             i += 2
 
-        #cover case when 1 occurrence from options
-        elif rule[i] == "(":
-            string += choice(options(rule[i+1:rule.index(")", i)])) 
-            i = rule.index(")", i) + 1 
             
 
-        elif rule[i] in ["|", "(", ")", "+", "*", "?", "{", "}"]:
+        elif rule[i] in '(){|+*?' + '}':
             i += 1
             pass
 
         else:
             string += rule[i]
+            print(f"Adding {rule[i]} to string => {string}")
             i += 1
         
-        print(i,'    ', string)
     return string
 
 def choice(options):
@@ -60,6 +71,13 @@ def choice(options):
 def options(sequence):
     return sequence.split("|")
 
-rule1 = "O(P|Q|R)+2?(3|4){" + "2}"
-print(rule1)
-print(generateString(rule1))
+rule1 = "O(P|Q|R)+2(3|4)"
+print('Final string: ',generateString(rule1))
+print('-'*70)
+
+rule2 = "A*B(C|D|E)F(G|H|i){"+"2}"
+print('Final string: ',generateString(rule2))
+print('-'*70)
+
+rule3 = "J+K(L|M|N)*O?(P|Q){"+"3}"
+print('Final string: ',generateString(rule3))
