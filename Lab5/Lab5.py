@@ -59,8 +59,19 @@ class Gramamr():
                         P2[key].append(p)
         print(f"2. After removing unit productions:\n{P2}")
 
-        #3. Eliminate inacessible symbols
+        #3. Eliminate inaccesible symbols
         P3 = P2.copy()
+        accesible_symbols = self.V_N
+        #find elements that are inaccesible
+        for key, value in P2.items():
+            for v in value:
+                for s in v:
+                    if s in accesible_symbols:
+                        accesible_symbols.remove(s)
+        #remove inaccesible symbols
+        for el in accesible_symbols:
+            del P3[el]
+        print(f"3. After removing inaccesible symbols:\n{P3}")
 
     
 
