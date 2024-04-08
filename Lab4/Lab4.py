@@ -52,8 +52,6 @@ def generateString(rule):
                 print(f"Zero or one occurrence: Adding {rule[i]} to string => {string}")
             i += 2
 
-            
-
         elif rule[i] in '(){|+*?' + '}':
             i += 1
             pass
