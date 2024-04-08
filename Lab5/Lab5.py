@@ -1,14 +1,8 @@
 class Gramamr():
-    def __init__(self):
-        self.P = {
-            'S' : ['dB', 'A'],
-            'A' : ['d', 'dS', 'aAdAB'],
-            'B' : ['aC', 'aS', 'AC'],
-            'C' : ['eps'],
-            'E' : ['AS']
-        }
-        self.V_N = ['S','A','B','C','E']
-        self.V_T = ['a', 'd']
+    def __init__(self,V_N,V_T,P):
+        self.P = P
+        self.V_N = V_N
+        self.V_T = V_T
     
     def chomskyNormalForm(self):
 
@@ -96,13 +90,52 @@ class Gramamr():
         #5. Obtain CNF
         P5 = P4.copy()
         temp = {}
-        stack = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','U','P','Q','R','S','T','U','V', 'W','X','Y','Z']
+
+        #define a list of free symbols
+        vocabulary = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V', 'W','X','Y','Z']
+        free_symbols = [v for v in vocabulary if v not in self.P.keys()]
         for key, value in P4.items():
             for v in value:
+
+                #check if oriduction satisfies CNF
                 if (len(v) == 1 and v in self.V_T) or (len(v) == 2 and v.isupper()):
-                    pass
+                    continue
                 else:
 
+                    #split production into two parts
+                    left = v[:len(v)//2]
+                    right = v[len(v)//2:]
 
-g = Gramamr()
+                    #get the new symbols for each half
+                    if left in temp.values():
+                        temp_key1 = ''.join([i for i in temp.keys() if temp[i] == left])
+                    else:
+                        temp_key1 = free_symbols.pop(0)
+                        temp[temp_key1] = left
+                    if right in temp.values():
+                        temp_key2 =''.join( [i for i in temp.keys() if temp[i] == right])
+                    else:
+                        temp_key2 = free_symbols.pop(0)
+                        temp[temp_key2] = right
+                    
+                    #replace the production with the new symbols
+                    P5[key] = [temp_key1 + temp_key2 if item == v else item for item in P5[key]]
+
+        #add new productions
+        for key, value in temp.items():
+            P5[key] = [value]
+
+        print(f"5. Final CNF:\n{P5}")
+
+
+P = {
+    'S' : ['dB', 'A'],
+    'A' : ['d', 'dS', 'aAdAB'],
+    'B' : ['aC', 'aS', 'AC'],
+    'C' : ['eps'],
+    'E' : ['AS']
+}
+V_N = ['S','A','B','C','E']
+V_T = ['a', 'd']
+g = Gramamr(V_N, V_T, P)
 g.chomskyNormalForm()
