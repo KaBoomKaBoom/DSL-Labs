@@ -22,7 +22,27 @@ class Gramamr():
             for p in productions:
                 if p == 'eps':
                     nt_epsilon.append(s)
-        print(nt_epsilon)
+        
+        for key, value in self.P.items():
+            #traverse each non-terminal that has epsilon production
+            for ep in nt_epsilon:
+                #traverse each production 
+                for v in value:
+                #check non-erminal with eps prod is in current production
+                    prod_copy = v
+                    if ep in prod_copy:
+                        for c in prod_copy:
+                            #delete epsilon prod and add new prod
+                            if c == ep:
+                                value.append(prod_copy.replace(c, ''))
+        for key, value in self.P.items():
+            if key in nt_epsilon and len(value) < 2:
+                del self.P[key]
+            else:
+                for v in value:
+                    if v == 'eps':
+                        value.remove(v)
+        print(self.P)
 
     
 
