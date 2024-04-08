@@ -12,8 +12,7 @@ class Gramamr():
     
     def chomskyNormalForm(self):
 
-        #remove epsilon productions
-
+        #1. remove epsilon productions
         #find non-terminal symbols that derive into empty string
         nt_epsilon = []
         for key, value in self.P.items():
@@ -35,14 +34,33 @@ class Gramamr():
                             #delete epsilon prod and add new prod
                             if c == ep:
                                 value.append(prod_copy.replace(c, ''))
+        #initialize a copy with added prod
+        P1 = self.P.copy()
+        #remove eps prod from copy
         for key, value in self.P.items():
             if key in nt_epsilon and len(value) < 2:
-                del self.P[key]
+                del P1[key]
             else:
                 for v in value:
                     if v == 'eps':
-                        value.remove(v)
-        print(self.P)
+                        P1[key][value].remove(v)
+        
+        print(f"1. After removing epsilon productions:\n{P1}")
+
+        #2. Eliminate any renaiming (unit productions)
+        #new productions for next step
+        P2 = P1.copy()
+        for key, value in P1.items():
+            #replace unit productions
+            for v in value:
+                if len(v) == 1 and v in self.V_N:
+                    P2[key].remove(v)
+                    for p in P1[v]:
+                        P2[key].append(p)
+        print(f"2. After removing unit productions:\n{P2}")
+
+        #3. Eliminate inacessible symbols
+        P3 = P2.copy()
 
     
 
