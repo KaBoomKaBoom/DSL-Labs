@@ -73,8 +73,25 @@ class Gramamr():
             del P3[el]
         print(f"3. After removing inaccesible symbols:\n{P3}")
 
-    
-
+        #4. Remove unproductive symbols
+        P4 = P3.copy()
+        for key,value in P3.items():
+            count = 0
+            #identify unproductive symbols
+            for v in value:
+                if len(v) == 1 and v in self.V_T:
+                    count+=1
+            #remove unproductive symbols
+            if count==0:
+                del P4[key]
+                for k, v in P3.items:
+                    for e in v:
+                        if k == key:
+                            break
+                        else:
+                            if key in v:
+                                P4[key].remove(v)
+        print(f"4. After removing unproductive symbols:\n{P4}")
 
 g = Gramamr()
 g.chomskyNormalForm()
