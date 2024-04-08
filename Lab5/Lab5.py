@@ -93,5 +93,16 @@ class Gramamr():
                                 P4[key].remove(v)
         print(f"4. After removing unproductive symbols:\n{P4}")
 
+        #5. Obtain CNF
+        P5 = P4.copy()
+        temp = {}
+        stack = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','U','P','Q','R','S','T','U','V', 'W','X','Y','Z']
+        for key, value in P4.items():
+            for v in value:
+                if (len(v) == 1 and v in self.V_T) or (len(v) == 2 and v.isupper()):
+                    pass
+                else:
+
+
 g = Gramamr()
 g.chomskyNormalForm()
