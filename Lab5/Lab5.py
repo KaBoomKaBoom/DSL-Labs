@@ -1,10 +1,17 @@
+import unittest
+
 class Gramamr():
     def __init__(self,V_N,V_T,P):
         self.P = P
+        self.P1 = {}
+        self.P2 = {}
+        self.P3 = {}
+        self.P4 = {}
+        self.P5 = {}
         self.V_N = V_N
         self.V_T = V_T
     
-    def chomskyNormalForm(self):
+    def RemoveEpsilon(self):
 
         #1. remove epsilon productions
         #find non-terminal symbols that derive into empty string
@@ -29,47 +36,53 @@ class Gramamr():
                             if c == ep:
                                 value.append(prod_copy.replace(c, ''))
         #initialize a copy with added prod
-        P1 = self.P.copy()
+        self.P1 = self.P.copy()
         #remove eps prod from copy
         for key, value in self.P.items():
             if key in nt_epsilon and len(value) < 2:
-                del P1[key]
+                del self.P1[key]
             else:
                 for v in value:
                     if v == 'eps':
-                        P1[key][value].remove(v)
+                        self.P1[key][value].remove(v)
         
-        print(f"1. After removing epsilon productions:\n{P1}")
-
+        print(f"1. After removing epsilon productions:\n{self.P1}")
+        return self.P1
+    
+    def EliminateUnitProd(self):
         #2. Eliminate any renaiming (unit productions)
         #new productions for next step
-        P2 = P1.copy()
+        self.P2 = self.P1.copy()
         for key, value in P1.items():
             #replace unit productions
             for v in value:
                 if len(v) == 1 and v in self.V_N:
-                    P2[key].remove(v)
-                    for p in P1[v]:
-                        P2[key].append(p)
-        print(f"2. After removing unit productions:\n{P2}")
+                    self.P2[key].remove(v)
+                    for p in self.P1[v]:
+                        self.P2[key].append(p)
+        print(f"2. After removing unit productions:\n{self.P2}")
+        return self.P2
 
+    def EliminateInaccesible(self):
         #3. Eliminate inaccesible symbols
-        P3 = P2.copy()
+        self.P3 = self.P2.copy()
         accesible_symbols = self.V_N
         #find elements that are inaccesible
-        for key, value in P2.items():
+        for key, value in self.P2.items():
             for v in value:
                 for s in v:
                     if s in accesible_symbols:
                         accesible_symbols.remove(s)
         #remove inaccesible symbols
         for el in accesible_symbols:
-            del P3[el]
-        print(f"3. After removing inaccesible symbols:\n{P3}")
+            del self.P3[el]
+        print(f"3. After removing inaccesible symbols:\n{self.P3}")
+        return self.P3
 
+    def RemoveUnprod(self):
         #4. Remove unproductive symbols
-        P4 = P3.copy()
-        for key,value in P3.items():
+        self.P4 = self.P3.copy()
+        for key,value in self.P3.items():
             count = 0
             #identify unproductive symbols
             for v in value:
@@ -77,24 +90,26 @@ class Gramamr():
                     count+=1
             #remove unproductive symbols
             if count==0:
-                del P4[key]
-                for k, v in P3.items:
+                del self.P4[key]
+                for k, v in self.P3.items:
                     for e in v:
                         if k == key:
                             break
                         else:
                             if key in v:
-                                P4[key].remove(v)
-        print(f"4. After removing unproductive symbols:\n{P4}")
+                                self.P4[key].remove(v)
+        print(f"4. After removing unproductive symbols:\n{self.P4}")
+        return self.P4
 
+    def ObtainCNF(self):
         #5. Obtain CNF
-        P5 = P4.copy()
+        self.P5 = self.P4.copy()
         temp = {}
 
         #define a list of free symbols
         vocabulary = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V', 'W','X','Y','Z']
         free_symbols = [v for v in vocabulary if v not in self.P.keys()]
-        for key, value in P4.items():
+        for key, value in self.P4.items():
             for v in value:
 
                 #check if oriduction satisfies CNF
@@ -119,13 +134,14 @@ class Gramamr():
                         temp[temp_key2] = right
                     
                     #replace the production with the new symbols
-                    P5[key] = [temp_key1 + temp_key2 if item == v else item for item in P5[key]]
+                    self.P5[key] = [temp_key1 + temp_key2 if item == v else item for item in self.P5[key]]
 
         #add new productions
         for key, value in temp.items():
-            P5[key] = [value]
+            self.P5[key] = [value]
 
-        print(f"5. Final CNF:\n{P5}")
+        print(f"5. Final CNF:\n{self.P5}")
+        return self.P5
 
 
 P = {
@@ -138,4 +154,9 @@ P = {
 V_N = ['S','A','B','C','E']
 V_T = ['a', 'd']
 g = Gramamr(V_N, V_T, P)
-g.chomskyNormalForm()
+P1 = g.RemoveEpsilon()
+P2 = g.EliminateUnitProd()
+P3 = g.EliminateInaccesible()
+P4 = g.RemoveUnprod()
+P5 = g.ObtainCNF()
+
