@@ -42,7 +42,7 @@ class Gramamr():
             else:
                 for v in value:
                     if v == 'eps':
-                        P1[key][value].remove(v)
+                        P1[key].remove(v)
         
         print(f"1. After removing epsilon productions:\n{P1}")
         self.P = P1.copy()
