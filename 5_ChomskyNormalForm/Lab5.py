@@ -4,7 +4,7 @@ class Gramamr():
             'S' : ['dB', 'A'],
             'A' : ['d', 'dS', 'aAdAB'],
             'B' : ['aC', 'aS', 'AC'],
-            'C' : ['eps'],
+            'C' : ['eps', 'aA'],
             'E' : ['AS']
             }
         self.V_N = ['S','A','B','C','E']
@@ -37,16 +37,20 @@ class Gramamr():
         P1 = self.P.copy()
         #remove eps prod from copy
         for key, value in self.P.items():
-            if key in nt_epsilon and len(value) < 2:
-                del P1[key]
-            else:
-                for v in value:
-                    if v == 'eps':
-                        P1[key].remove(v)
+            for v in value:
+                if v == 'eps':
+                    P1[key].remove(v)
         
-        print(f"1. After removing epsilon productions:\n{P1}")
-        self.P = P1.copy()
-        return  P1
+        P_final = {}
+        for key,value in P1.items():
+            if len(value) != 0:
+                P_final[key] = value
+            else:
+                self.V_N.remove(key)
+        
+        print(f"1. After removing epsilon productions:\n{P_final}")
+        self.P = P_final.copy()
+        return  P_final
     
     def EliminateUnitProd(self):
         #2. Eliminate any renaiming (unit productions)
@@ -66,7 +70,7 @@ class Gramamr():
     def EliminateInaccesible(self):
         #3. Eliminate inaccesible symbols
         P3 = self.P.copy()
-        accesible_symbols = self.V_N
+        accesible_symbols = [i for i in self.V_N]
         #find elements that are inaccesible
         for key, value in self.P.items():
             for v in value:
@@ -77,6 +81,7 @@ class Gramamr():
         for el in accesible_symbols:
             del P3[el]
         print(f"3. After removing inaccesible symbols:\n{P3}")
+        print(self.V_N)
         self.P = P3.copy()
         return P3
 
@@ -89,18 +94,24 @@ class Gramamr():
             count = 0
             #identify unproductive symbols
             for v in value:
+                for a in v:
+                    # print(key,'   ', a)
+                    # print(self.V_N)
+                    if a.isupper() and a in self.V_N:
+                        count+=1
                 if len(v) == 1 and v in self.V_T:
                     count+=1
+            
             #remove unproductive symbols
             if count==0:
                 del P4[key]
-                for k, v in self.P.items():
-                    for e in v:
-                        if k == key:
-                            break
-                        else:
-                            if key in e:
-                                P4[key].remove(e)
+                # for k, v in self.P.items():
+                #     for e in v:
+                #         if k == key:
+                #             break
+                #         else:
+                #             if key in e:
+                #                 P4[key].remove(e)
 
         #Check the values
         for key, value in self.P.items():
